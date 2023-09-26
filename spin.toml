@@ -18,7 +18,11 @@ id = "envvars"
 source = "target/wasm32-wasi/release/envvars.wasm"
 allowed_http_hosts = []
 environment = { "API_URL" = "http://envvars:8080/api", "CA_URL" = "http://envvars:8080/api", "DA" = "http://envvars:8080/api" }
-files = [{ source = "./contents", destination = "/contents" }]
+files = [
+    # "./**/*" # Doesn't work in k8s
+    { source = "frontend", destination = "/frontend" },
+    { source = "target", destination = "/target" }
+    ]
 [component.config]
 config_one = "{{ config_one }}"
 config_two = "{{ config_two }}"

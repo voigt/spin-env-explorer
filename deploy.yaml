@@ -15,20 +15,20 @@ spec:
         app: spin-env-explorer
     spec:
       runtimeClassName: wasmtime-spin
-      # initContainers:
-      #   - name: get-contents
-      #     image: alpine/git
-      #     command:
-      #       - "sh"
-      #       - "-c"
-      #       - "git clone $(GIT_REPO) . "
-      #     workingDir: /var/lib/data
-      #     env:
-      #       - name: GIT_REPO
-      #         value: https://github.com/mdn/beginner-html-site-scripted
-      #     volumeMounts:
-      #       - mountPath: /var/lib/data
-      #         name: git
+      initContainers:
+        - name: get-contents
+          image: alpine/git
+          command:
+            - "sh"
+            - "-c"
+            - "git clone $(GIT_REPO) . "
+          workingDir: /var/lib/data
+          env:
+            - name: GIT_REPO
+              value: https://github.com/mdn/beginner-html-site-scripted
+          volumeMounts:
+            - mountPath: /var/lib/data
+              name: git
       containers:
       - image: voigt/spin-env-explorer:latest
         name: spin-env-explorer
