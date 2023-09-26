@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spin-env-explorer
+  name: spin-env-explorer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spin-env-explorer
+  template:
+    metadata:
+      labels:
+        app: spin-env-explorer
+    spec:
+      runtimeClassName: wasmtime-spin
+      # initContainers:
+      #   - name: get-contents
+      #     image: alpine/git
+      #     command:
+      #       - "sh"
+      #       - "-c"
+      #       - "git clone $(GIT_REPO) . "
+      #     workingDir: /var/lib/data
+      #     env:
+      #       - name: GIT_REPO
+      #         value: https://github.com/mdn/beginner-html-site-scripted
+      #     volumeMounts:
+      #       - mountPath: /var/lib/data
+      #         name: git
+      containers:
+      - image: voigt/spin-env-explorer:latest
+        name: spin-env-explorer
+        command: ["/"]
+        env:
+        - name: SPIN_CONFIG_ENVIRONMENT
+          value: "kubernetes"
+        - name: SPIN_CONFIG_EXT_ENV_ONE
+          value: "external-value-one"
+        readinessProbe:
+          httpGet:
+            path: /api
+            port: 80
+        volumeMounts:
+        - mountPath: /contents
+          name: git
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+        - emptyDir: {}
+          name: git

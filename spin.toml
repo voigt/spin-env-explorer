@@ -1,0 +1,39 @@
+spin_manifest_version = "1"
+authors = ["Christoph Voigt <voigt.christoph@gmail.com>"]
+description = "Showcase to retrieve configmaps and secrets from Kubernetes"
+name = "envvars"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+
+[variables]
+config_one = { default = "value_one" }
+config_two = { default = "value_one" }
+ext_env_one = { default = "undefined" }
+ext_env_two = { default = "undefined" }
+environment = { default = "local" }
+
+[[component]]
+id = "envvars"
+source = "target/wasm32-wasi/release/envvars.wasm"
+allowed_http_hosts = []
+environment = { "API_URL" = "http://envvars:8080/api", "CA_URL" = "http://envvars:8080/api", "DA" = "http://envvars:8080/api" }
+files = [{ source = "./contents", destination = "/contents" }]
+[component.config]
+config_one = "{{ config_one }}"
+config_two = "{{ config_two }}"
+ext_env_one = "{{ ext_env_one }}"
+ext_env_two = "{{ ext_env_two }}"
+environment = "{{ environment }}"
+[component.trigger]
+route = "/api/..."
+[component.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
+
+[[component]]
+source = "target/wasm32-wasi/release/spin_static_fs.wasm"
+id = "frontend"
+files = [ { source = "frontend", destination = "/" } ]
+[component.trigger]
+route = "/..."
