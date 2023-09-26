@@ -21,7 +21,8 @@ environment = { "API_URL" = "http://envvars:8080/api", "CA_URL" = "http://envvar
 files = [
     # "./**/*" # Doesn't work in k8s
     { source = "frontend", destination = "/frontend" },
-    { source = "target", destination = "/target" }
+    { source = "target", destination = "/target" },
+    { source = "contents", destination = "/contents" }
     ]
 [component.config]
 config_one = "{{ config_one }}"
